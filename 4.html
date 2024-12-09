@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <img src="./images/zao.jpg" alt="图片" class="foo bar">
+    <script>
+        var images = document.getElementsByTagName('img');
+        var attributePatterns = [/src="([^"]+)"/, /alt="([^"]+)"/,/class="([^"]+)"/];
+        for (var i = 0; i < images.length; i++) {
+            var image = images[i];
+            var attributes = {};
+            for(var j = 0; j <attributePatterns.length; j++) {
+                var res = attributePatterns[j].exec(image.outerHTML);
+                var [, value] = res;
+                var attributeName = attributePatterns[j].toString().match(/([a-zA-Z]+)/)[1];
+                attributes[attributeName] = value;
+                
+            }
+            console.log(attributes);
+        }
+    </script>
+</body>
+</html>

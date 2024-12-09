@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        function binaryStringToDecimal(binaryStr) {
+            return parseInt(binaryStr, 2);
+        }
+        
+        var binaryStr = String(prompt("输入一个二进制字符串"));
+        var decimalNum = binaryStringToDecimal(binaryStr);
+        document.write(decimalNum); 
+    </script>
+</body>
+</html>

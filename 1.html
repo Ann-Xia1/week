@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        .content {
+            width: 350px;
+            height: 335px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            margin: 0 auto;
+        }
+
+        .btn {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .btn button {
+            width: 100px;
+            height: 40px;
+            background-color: bisque;
+        }
+
+        p {
+            border: 1px solid #cfc08c;
+            width: 350px;
+            height: 150px;
+        }
+    </style>
+</head>
+<body>
+    <div class="content">
+        <textarea id="input" rows="5" cols="50" placeholder="输入要编码或解码的文本"></textarea>
+        <div class="btn">
+            <button onclick="encodeText()">Base32编码</button>
+            <button onclick="decodeText()">Base32解码</button>
+        </div>
+        <p id="output"></p>
+    </div>
+    <script>
+        function base32Encode(str) {
+        let base32 = new Base32();
+        return base32.encode(str);
+    }
+    
+    function base32Decode(str) {
+        let base32 = new Base32();
+        return base32.decode(str);
+    }
+    
+    class Base32 {
+        constructor() {
+            this.alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567=';
+            this.map = this.alphabet.split('').reduce((acc, letter, index) => {
+                acc[letter] = index;
+                return acc;
+            }, {});
+        }
+    
+        encode(input) {
+            let result = '';
+            let bits = 0;
+            let maxV = 31;
+            let maxB = 5;
+            for (let i = 0; i < input.length; i++) {
+                let c = input.charCodeAt(i);
+                if (i > 0) {
+                    bits <<= 8;
+                }
+                bits |= c;
+                while (bits > maxV) {
+                    result += this.alphabet[bits & maxV];
+                    bits >>>= maxB;
+                }
+            }
+            if (bits > 0) {
+                result += this.alphabet[bits & maxV];
+            }
+            return result;
+        }
+    
+        decode(input) {
+            let result = '';
+            let bits = 0;
+            let maxV = 0xFFFFffffffffff;
+            let maxB = 5;
+            for (let i = 0; i < input.length; i++) {
+                let value = this.map[input[i]];
+                if (value === undefined) {
+                    continue;
+                }
+                bits <<= maxB;
+                bits |= value;
+                while (bits > maxV) {
+                    result += String.fromCharCode(bits & maxV);
+                    bits >>>= 8;
+                }
+            }
+            return result;
+        }
+    }
+    
+    function encodeText() {
+        let input = document.getElementById('input').value;
+        let encoded = base32Encode(input);
+        document.getElementById('output').innerText = encoded;
+    }
+    
+    function decodeText() {
+        let input = document.getElementById('output').innerText;
+        let decoded = base32Decode(input);
+        document.getElementById('output').innerText = decoded;
+    }
+    </script>
+</body>
+</html>
